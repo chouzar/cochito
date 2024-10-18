@@ -13,8 +13,10 @@ import nakai/html
 
 // ------ App startup ------ //
 
+const port = 8088
+
 pub fn main() {
-  io.println("Starting up server...")
+  io.println("Starting up cochito app...")
   let assert Ok(_) = supervisor()
   process.sleep_forever()
 }
@@ -27,20 +29,23 @@ fn supervisor() {
 }
 
 fn server_childspec() {
-  let to_init_failed = fn(_error) {
+  let to_init_failed = fn(error) {
+    io.println("Server start error...")
+    io.debug(error)
     let reason = process.Abnormal("server start error")
     actor.InitFailed(reason)
   }
 
   supervisor.supervisor(fn(_caller) {
-    serve()
+    io.println("Starting up mist server...")
+    start_server()
     |> result.map_error(to_init_failed)
   })
 }
 
 // ------ Server logic and middleware ------ //
 
-fn serve() {
+fn start_server() {
   let middleware = fn(request: Request(Connection)) -> Response(ResponseData) {
     request
     |> router()
@@ -48,7 +53,7 @@ fn serve() {
   }
 
   mist.new(middleware)
-  |> mist.port(8088)
+  |> mist.port(port)
   |> mist.start_http()
 }
 
@@ -84,16 +89,21 @@ fn page_index() -> html.Node {
     html.blockquote(
       [attr.cite("https://es.wikipedia.org/wiki/Phocoena_sinus")],
       [
-        html.Text(
-          "The vaquita (/vəˈkiːtə/ və-KEE-tə; Phocoena sinus) is a species of porpoise endemic
+        html.p([], [
+          html.Text(
+            "The vaquita (/vəˈkiːtə/ və-KEE-tə; Phocoena sinus) is a species of porpoise endemic
           to the northern end of the Gulf of California in Baja California, Mexico.
           Reaching a maximum body length of 150 cm (4.9 ft) (females) or 140 cm (4.6 ft) (males),
-          it is the smallest of all living cetaceans.
-
-          The species is currently on the brink of extinction, and is listed as Critically
+          it is the smallest of all living cetaceans.",
+          ),
+        ]),
+        html.p([], [
+          html.Text(
+            "The species is currently on the brink of extinction, and is listed as Critically
           Endangered by the IUCN Red List; the steep decline in abundance is primarily due to
           bycatch in gillnets from the illegal totoaba fishery.",
-        ),
+          ),
+        ]),
       ],
     ),
   ])
