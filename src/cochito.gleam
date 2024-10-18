@@ -3,6 +3,9 @@ import gleam/erlang/process
 import gleam/http/request.{type Request}
 import gleam/http/response.{type Response}
 import gleam/io
+import gleam/otp/actor
+import gleam/otp/supervisor
+import gleam/result
 import mist.{type Connection, type ResponseData}
 import nakai
 import nakai/html
@@ -10,11 +13,28 @@ import nakai/html
 // ------ App startup ------ //
 
 pub fn main() {
-  io.println("Hello from cochito!")
-
-  let assert Ok(_) = serve()
-
+  io.println("Starting up server...")
+  let assert Ok(_) = supervisor()
   process.sleep_forever()
+}
+
+fn supervisor() {
+  supervisor.start(fn(children) {
+    children
+    |> supervisor.add(server_childspec())
+  })
+}
+
+fn server_childspec() {
+  let to_init_failed = fn(_error) {
+    let reason = process.Abnormal("server start error")
+    actor.InitFailed(reason)
+  }
+
+  supervisor.supervisor(fn(_caller) {
+    serve()
+    |> result.map_error(to_init_failed)
+  })
 }
 
 // ------ Server logic ------ //
