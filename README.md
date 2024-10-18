@@ -21,5 +21,7 @@ Currently the whole server just sits as a single file at `src/cochito.gleam`, th
 
 * [Gleam standard library](https://hexdocs.pm/gleam_stdlib/), basic structs and functions.
 * [Gleam Erlang](https://hexdocs.pm/gleam_erlang/), access to processes, nodes, ports, etc.
-* [Gleam OTP](https://hexdocs.pm/gleam_otp/), OTP primitives (task, actor and supervisor).
-* [mist](https://hexdocs.pm/mist/), basic API for a web server.
+* [Gleam OTP](https://hexdocs.pm/gleam_otp/), primitives for task, actor and supervisor.
+* [mist](https://hexdocs.pm/mist/), a Gleam web server.
+* [Gleam HTTP](https://hexdocs.pm/gleam_http/gleam/http.html), composable http middleware.
+* [nakai](https://hexdocs.pm/nakai/), generate HTML through Gleam.
