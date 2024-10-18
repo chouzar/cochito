@@ -8,6 +8,7 @@ import gleam/otp/supervisor
 import gleam/result
 import mist.{type Connection, type ResponseData}
 import nakai
+import nakai/attr
 import nakai/html
 
 // ------ App startup ------ //
@@ -81,7 +82,25 @@ fn not_found() -> Response(ResponseData) {
 // ------ HTML pages ------ //
 
 fn page_index() -> html.Node {
-  html.h1([], [html.Text("Hello World")])
+  html.Fragment([
+    html.h1([], [html.Text("Vaquita Marino o Cochito")]),
+    html.p([], [html.Text("From wikipedia:")]),
+    html.blockquote(
+      [attr.cite("https://es.wikipedia.org/wiki/Phocoena_sinus")],
+      [
+        html.Text(
+          "The vaquita (/vəˈkiːtə/ və-KEE-tə; Phocoena sinus) is a species of porpoise endemic
+          to the northern end of the Gulf of California in Baja California, Mexico.
+          Reaching a maximum body length of 150 cm (4.9 ft) (females) or 140 cm (4.6 ft) (males),
+          it is the smallest of all living cetaceans.
+
+          The species is currently on the brink of extinction, and is listed as Critically
+          Endangered by the IUCN Red List; the steep decline in abundance is primarily due to
+          bycatch in gillnets from the illegal totoaba fishery.",
+        ),
+      ],
+    ),
+  ])
 }
 
 fn page_error() -> html.Node {
