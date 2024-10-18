@@ -38,45 +38,41 @@ fn server_childspec() {
   })
 }
 
-// ------ Server logic ------ //
+// ------ Server logic and middleware ------ //
 
 fn serve() {
-  mist.new(pipeline)
+  let middleware = fn(request: Request(Connection)) -> Response(ResponseData) {
+    request
+    |> router()
+    |> from_document()
+  }
+
+  mist.new(middleware)
   |> mist.port(8088)
   |> mist.start_http()
 }
 
-fn pipeline(request: Request(Connection)) -> Response(ResponseData) {
-  request
-  |> router()
-}
-
-fn router(request: Request(Connection)) -> Response(ResponseData) {
-  case request.path_segments(request) {
-    [] -> index()
-    _other -> not_found()
-  }
-}
-
-fn index() -> Response(ResponseData) {
-  let page =
-    page_index()
-    |> nakai.to_string_builder()
-    |> bytes_builder.from_string_builder()
-
-  response.new(200)
+fn from_document(response: Response(html.Node)) -> Response(ResponseData) {
+  response
   |> response.prepend_header("content-type", "text/html; charset=utf-8")
-  |> response.set_body(mist.Bytes(page))
-}
-
-fn not_found() -> Response(ResponseData) {
-  let page =
-    page_error()
+  |> response.map(fn(page: html.Node) -> ResponseData {
+    page
     |> nakai.to_string_builder()
     |> bytes_builder.from_string_builder()
+    |> mist.Bytes()
+  })
+}
 
-  response.new(404)
-  |> response.set_body(mist.Bytes(page))
+fn router(request: Request(Connection)) -> Response(html.Node) {
+  case request.path_segments(request) {
+    [] ->
+      response.new(200)
+      |> response.set_body(page_index())
+
+    _other ->
+      response.new(400)
+      |> response.set_body(page_error())
+  }
 }
 
 // ------ HTML pages ------ //
