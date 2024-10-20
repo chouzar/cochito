@@ -1,7 +1,9 @@
+import envoy
 import gleam/bytes_builder
 import gleam/erlang/process
 import gleam/http/request.{type Request}
 import gleam/http/response.{type Response}
+import gleam/int
 import gleam/io
 import gleam/otp/actor
 import gleam/otp/supervisor
@@ -12,8 +14,6 @@ import nakai/attr
 import nakai/html
 
 // ------ App startup ------ //
-
-const port = 8088
 
 pub fn main() {
   io.println("Starting up cochito app...")
@@ -46,6 +46,9 @@ fn server_childspec() {
 // ------ Server logic and middleware ------ //
 
 fn start_server() {
+  let assert Ok(port) =
+    envoy.get("PORT") |> result.unwrap("8088") |> int.parse()
+
   let middleware = fn(request: Request(Connection)) -> Response(ResponseData) {
     request
     |> router()

@@ -15,6 +15,16 @@ To get precompiled erlang suitable for deployment:
 gleam export erlang-shipment
 ```
 
+After exporting files for release and preparing the package version for [DeployEx](https://github.com/thiagoesteves/deployex), run the following commands if testing locally:
+```sh
+export app_name=cochito
+export release_path=erlang-shipment
+cd build
+tar -czvf ${release_path}/${app_name}-0.1.0.tar.gz ${release_path}
+cp ${release_path}/${app_name}-0.1.0.tar.gz /tmp/${app_name}/dist/${app_name}
+echo "{\"version\":\"0.1.0\",\"pre_commands\": [],\"hash\":\"local\"}" | jq > /tmp/${app_name}/versions/${app_name}/local/current.json
+```
+
 ## Architecture
 
 Currently the whole server just sits as a single file at `src/cochito.gleam`, these are the main libraries being used:
