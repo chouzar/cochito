@@ -34,6 +34,7 @@ write_files:
     content: |
       {
         "app_name": "cochito",
+        "app_lang": "gleam",
         "replicas": ${replicas},
         "account_name": "${account_name}",
         "deployex_hostname": "${deployex_hostname}",
@@ -97,7 +98,7 @@ write_files:
     owner: root:root
     permissions: "0644"
     content: |
-      upstream phoenix {
+      upstream gleam {
           server 127.0.0.1:4000 max_fails=5 fail_timeout=60s;
           server 127.0.0.1:4001 max_fails=5 fail_timeout=60s;
           server 127.0.0.1:4002 max_fails=5 fail_timeout=60s;
@@ -165,7 +166,7 @@ write_files:
               proxy_set_header Upgrade $http_upgrade;
               proxy_set_header Connection "upgrade";
 
-              proxy_pass http://phoenix;
+              proxy_pass http://gleam;
           }
           # Add here the letsencrypt paths
       }
