@@ -15,7 +15,7 @@ To get precompiled erlang suitable for deployment:
 gleam export erlang-shipment
 ```
 
-After exporting files for release and preparing the package version for [DeployEx](https://github.com/thiagoesteves/deployex), run the following commands if testing locally:
+If you want to test locally with [DeployEx](https://github.com/thiagoesteves/deployex), run the following commands to create the release package:
 ```sh
 export app_name=cochito
 export release_path=erlang-shipment
